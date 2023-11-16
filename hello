@@ -1,0 +1,110 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+namespace CultureForums {
+
+    class UserProfile {
+    private:
+        std::string username;
+        std::string bio;
+
+    public:
+        UserProfile(const std::string& username, const std::string& bio)
+            : username(username), bio(bio) {}
+
+        std::string getUsername() const { return username; }
+        std::string getBio() const { return bio; }
+    };
+
+    class Comment {
+    private:
+        UserProfile author;
+        std::string content;
+
+    public:
+        Comment(const UserProfile& author, const std::string& content)
+            : author(author), content(content) {}
+
+        UserProfile getAuthor() const { return author; }
+        std::string getContent() const { return content; }
+    };
+
+    class ForumThread {
+    private:
+        std::string title;
+        std::string content;
+        UserProfile author;
+        std::vector<Comment> comments;
+
+    public:
+        ForumThread(const std::string& title, const std::string& content, const UserProfile& author)
+            : title(title), content(content), author(author) {}
+
+        std::string getTitle() const { return title; }
+        std::string getContent() const { return content; }
+        UserProfile getAuthor() const { return author; }
+
+        void addComment(const Comment& comment) {
+            comments.push_back(comment);
+        }
+
+        void displayComments() const {
+            std::cout << "Comments:\n";
+            for (const Comment& comment : comments) {
+                std::cout << "Author: " << comment.getAuthor().getUsername() << "\n";
+                std::cout << "Content: " << comment.getContent() << "\n";
+                std::cout << "------------------------\n";
+            }
+        }
+    };
+
+    class CultureForums {
+    private:
+        std::vector<UserProfile> userProfiles;
+        std::vector<ForumThread> threads;
+
+    public:
+        UserProfile createUserProfile(const std::string& username, const std::string& bio) {
+            UserProfile userProfile(username, bio);
+            userProfiles.push_back(userProfile);
+            return userProfile;
+        }
+
+        void createThread(const std::string& title, const std::string& content, const std::string& username, const std::string& bio) {
+            UserProfile author = createUserProfile(username, bio);
+            ForumThread thread(title, content, author);
+            threads.push_back(thread);
+        }
+
+        void displayThreads() const {
+            std::cout << "Culture Forums Threads:\n";
+            for (const ForumThread& thread : threads) {
+                std::cout << "Title: " << thread.getTitle() << "\n";
+                std::cout << "Content: " << thread.getContent() << "\n";
+                std::cout << "Author: " << thread.getAuthor().getUsername() << "\n";
+                std::cout << "------------------------\n";
+                thread.displayComments();
+            }
+        }
+    };
+}
+
+int main() {
+    CultureForums::CultureForums cultureForums;
+
+    // Creating user profiles
+    cultureForums.createUserProfile("User1", "Mexico.");
+    cultureForums.createUserProfile("User2", "USA");
+    cultureForums.createUserProfile("User3", "What is life?");
+
+    // Creating forum threads
+    cultureForums.createThread("Mexico", "Share some recipes", "User1", "");
+    cultureForums.createThread("USA", "Discuss the latest fashion trends for 2023-24.", "User2", "");
+    cultureForums.createThread("What is life?", "Share your experiences and learnings from different cultures.", "User3", "");
+
+    // Adding comments to threads
+    cultureForums.displayThreads();
+
+    return 0;
+}
